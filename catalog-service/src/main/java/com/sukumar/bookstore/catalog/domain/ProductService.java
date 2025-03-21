@@ -1,7 +1,5 @@
 package com.sukumar.bookstore.catalog.domain;
 
-import java.util.List;
-
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -15,10 +13,12 @@ import jakarta.transaction.Transactional;
 public class ProductService {
 
 	private ProductRepository productRepository;
+	
+	private ApplicationProperties applicationProperties;
 
-	public ProductService(ProductRepository productRepository) {
-		super();
+	public ProductService(ProductRepository productRepository, ApplicationProperties applicationProperties) {
 		this.productRepository = productRepository;
+		this.applicationProperties = applicationProperties;
 	}
 	
 	public PageResult<Product> getAllProducts(int pageNumber) {
@@ -27,7 +27,7 @@ public class ProductService {
 		//In spring data jpa perspective index for page always starts with 0 and usually user asks send me
 		//list of first page so we should perform below validation
 		pageNumber = pageNumber <= 1 ? 0 : pageNumber - 1;
-		Pageable pageable = PageRequest.of(pageNumber, 10, sort);
+		Pageable pageable = PageRequest.of(pageNumber, applicationProperties.pageSize(), sort);
 		Page<Product> pageResults = productRepository.findAll(pageable).map(ProductMapper::toProduct);
 		return new PageResult<>(
 				pageResults.getContent(), 
