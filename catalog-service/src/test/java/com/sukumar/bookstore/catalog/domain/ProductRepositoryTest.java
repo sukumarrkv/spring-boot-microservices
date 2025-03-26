@@ -1,7 +1,10 @@
 package com.sukumar.bookstore.catalog.domain;
 
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.Assert.assertThat;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
+import java.math.BigDecimal;
 import java.util.List;
 
 import org.junit.jupiter.api.Test;
@@ -23,5 +26,20 @@ public class ProductRepositoryTest {
 	void shouldGetAllProducts() {
 		List<ProductEntity> products = productRepository.findAll();
 		assertEquals(15, products.size());
+	}
+	
+	@Test
+	void shouldGetProductByCode() {
+		ProductEntity productEntity = productRepository.findByCode("P100").orElseThrow();
+		assertThat(productEntity.getCode()).isEqualTo("P100");
+		assertThat(productEntity.getName()).isEqualTo("The Hunger Games");
+		assertThat(productEntity.getDescription()).isEqualTo("Winning will make you famous. Losing means certain death...");
+		assertThat(productEntity.getImageUrl()).isEqualTo("https://images.gr-assets.com/books/1447303603l/2767052.jpg");
+		assertThat(productEntity.getPrice()).isEqualTo(new BigDecimal("34.00"));
+	}
+	
+	@Test
+	void shouldGetProductByCodeReturnEmpty() {
+		assertThat(productRepository.findByCode("invalid_product_code")).isEmpty();
 	}
 }

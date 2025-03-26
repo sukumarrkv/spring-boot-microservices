@@ -1,10 +1,14 @@
 package com.sukumar.bookstore.catalog.domain;
 
+import java.util.Optional;
+
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
+
+import com.sukumar.bookstore.catalog.web.exception.ProductNotFoundException;
 
 import jakarta.transaction.Transactional;
 
@@ -38,5 +42,14 @@ public class ProductService {
 				pageResults.isLast(), 
 				pageResults.hasNext(), 
 				pageResults.hasPrevious());
+	}
+	
+	public Product getProductByCode(String code) {
+		Optional<ProductEntity> optionalProduct = productRepository.findByCode(code);
+		if(optionalProduct.isPresent()) {
+			return optionalProduct.map(ProductMapper::toProduct).get();
+		} else {
+			throw ProductNotFoundException.forCode(code);
+		}
 	}
 }
