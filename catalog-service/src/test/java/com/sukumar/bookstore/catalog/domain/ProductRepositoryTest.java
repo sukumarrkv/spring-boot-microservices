@@ -16,6 +16,10 @@ import org.springframework.test.context.jdbc.Sql;
 //This is also called slice annotation where we testing a slice of application (repository layer)
 //When we use DataJpaTest annotation spring framework will use in memory database to run these tests.
 //It will look into for any in memory database present in class path. If it not present it will throw error.
+//@DataJpaTest(properties = {
+//		"spring.test.database.replace=none",
+//		"spring.datasource.url=jdbc:tc:mysql:latest:///db"
+//})
 @Sql("/jpa-test-data.sql")
 public class ProductRepositoryTest {
 

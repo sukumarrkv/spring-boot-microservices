@@ -14,7 +14,7 @@ import com.sukumar.bookstore.catalog.domain.Product;
 import io.restassured.RestAssured;
 import io.restassured.http.ContentType;
 
-@Sql("/test-data.sql")
+@Sql("/jpa-test-data.sql")
 public class ProductControllerTest extends AbstractIntegrationTest{
 
 	@Test
