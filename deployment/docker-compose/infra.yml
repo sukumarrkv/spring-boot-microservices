@@ -1,0 +1,12 @@
+version: "3.8"
+name: "bookstore-spring-boot-microservices"
+services:
+  catalog-db:
+    image: mysql
+    container_name: catalog-db
+    environment:
+      MYSQL_ROOT_PASSWORD: test1234
+      MYSQL_DATABASE: catalog
+      MYSQL_ROOT_HOSTS: "%"
+    ports:
+      - 6666:3306
