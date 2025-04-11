@@ -1,8 +1,11 @@
 package com.sukumar.bookstore.orders.domain;
 
+import org.springframework.stereotype.Service;
+
 import com.sukumar.bookstore.orders.domain.models.CreateOrderRequest;
 import com.sukumar.bookstore.orders.domain.models.CreateOrderResponse;
 
+@Service
 public class OrderServcie {
 
 	private OrderRepository orderRepository;
@@ -15,7 +18,7 @@ public class OrderServcie {
 		OrderEntity orderEntity = OrderMapper.convertToEntity(request);
 		orderEntity.setUserName(userName);
 		OrderEntity savedOrder = orderRepository.save(orderEntity);
-		return new CreateOrderResponse(savedOrder.getUserName());
+		return new CreateOrderResponse(savedOrder.getOrderNumber());
 	}
 	
 }
