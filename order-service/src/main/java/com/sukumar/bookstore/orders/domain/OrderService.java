@@ -6,11 +6,11 @@ import com.sukumar.bookstore.orders.domain.models.CreateOrderRequest;
 import com.sukumar.bookstore.orders.domain.models.CreateOrderResponse;
 
 @Service
-public class OrderServcie {
+public class OrderService {
 
 	private OrderRepository orderRepository;
 
-	public OrderServcie(OrderRepository orderRepository) {
+	public OrderService(OrderRepository orderRepository) {
 		this.orderRepository = orderRepository;
 	}
 	
