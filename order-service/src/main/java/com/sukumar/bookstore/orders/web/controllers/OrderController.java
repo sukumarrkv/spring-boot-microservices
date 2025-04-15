@@ -1,5 +1,7 @@
 package com.sukumar.bookstore.orders.web.controllers;
 
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -26,8 +28,8 @@ public class OrderController {
 	}
 	
 	@PostMapping
-	public CreateOrderResponse createOrder(@Valid @RequestBody CreateOrderRequest createOrderRequest) {
+	public ResponseEntity<CreateOrderResponse> createOrder(@Valid @RequestBody CreateOrderRequest createOrderRequest) {
 		String userName = securityService.getLoginUserName();
-		return orderServcie.createOrder(createOrderRequest, userName);
+		return ResponseEntity.status(HttpStatus.CREATED).body(orderServcie.createOrder(createOrderRequest, userName));
 	}
 }
