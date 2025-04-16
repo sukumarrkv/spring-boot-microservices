@@ -6,6 +6,8 @@ import org.junit.jupiter.api.Test;
 import org.springframework.http.HttpStatus;
 
 import com.sukumar.bookstore.orders.AbstractIntegrationTest;
+import com.sukumar.bookstore.orders.domain.models.CreateOrderRequest;
+import com.sukumar.bookstore.orders.testdata.TestDataFactory;
 
 import io.restassured.RestAssured;
 import io.restassured.http.ContentType;
@@ -42,11 +44,18 @@ public class OrderControllerIntegrationTest extends AbstractIntegrationTest{
 				    ]
 				}
 					""";
-			
+			//CreateOrderRequest orderRequest = TestDataFactory.createValidOrderRequest();
 			RestAssured.given().contentType(ContentType.JSON).body(payload)
-			.post("/api/order/").then().log().all()
+			.log().all().post("/api/order/").then().log().all()
 			.statusCode(HttpStatus.CREATED.value())
 			.body("orderNumber", Matchers.notNullValue());
+		}
+		
+		@Test
+		void shouldReturnBadRequestWhenMadatoryDataIsMissing() {
+			CreateOrderRequest orderRequest = TestDataFactory.createOrderRequestWithInvalidCustomer();
+			RestAssured.given().contentType(ContentType.JSON).body(orderRequest)
+			.post("/api/order/").then().statusCode(HttpStatus.BAD_REQUEST.value());
 		}
 	}
 }
