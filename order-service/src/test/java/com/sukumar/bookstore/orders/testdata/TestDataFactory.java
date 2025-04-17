@@ -32,7 +32,7 @@ public class TestDataFactory {
 	public static CreateOrderRequest createOrderRequestWithInvalidCustomer() {
 		return Instancio.of(CreateOrderRequest.class)
 				.generate(field(Customer::emailAddress), gen -> gen.text().pattern("#a#a#a#a#a#a@mail.com"))
-				.set(field(Customer::emailAddress), "")
+				.set(field(Customer::phoneNumber), "")
 				.set(field(CreateOrderRequest::items), VALID_ORDER_ITEMS)
 				.generate(field(Address::country), gen -> gen.oneOf(VALID_COUNTRIES))
 				.create();

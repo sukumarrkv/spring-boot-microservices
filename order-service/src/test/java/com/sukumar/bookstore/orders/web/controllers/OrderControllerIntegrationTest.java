@@ -55,7 +55,8 @@ public class OrderControllerIntegrationTest extends AbstractIntegrationTest{
 		void shouldReturnBadRequestWhenMadatoryDataIsMissing() {
 			CreateOrderRequest orderRequest = TestDataFactory.createOrderRequestWithInvalidCustomer();
 			RestAssured.given().contentType(ContentType.JSON).body(orderRequest)
-			.post("/api/order/").then().statusCode(HttpStatus.BAD_REQUEST.value());
+			.post("/api/order/").then().statusCode(HttpStatus.BAD_REQUEST.value())
+			.body("errors", Matchers.contains("Customer phone number is required"));
 		}
 	}
 }
