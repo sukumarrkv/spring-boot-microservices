@@ -52,4 +52,15 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler{
 		problemDetail.setProperty("timestamp", Instant.now());
 		return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(problemDetail);
 	}
+	
+	@ExceptionHandler(InvalidOrderException.class)
+	public ProblemDetail handleInvalidOrderException(InvalidOrderException ioe) {
+		ProblemDetail problemDetail = ProblemDetail.forStatusAndDetail(HttpStatus.BAD_REQUEST, ioe.getMessage());
+		problemDetail.setTitle("Invalid order request");
+		problemDetail.setType(BAD_REQUEST_TYPE);
+		problemDetail.setProperty("service", SERVICE_NAME);
+		problemDetail.setProperty("error_category", "Generic");
+		problemDetail.setProperty("timestamp", Instant.now());
+		return problemDetail;
+	}
 }
