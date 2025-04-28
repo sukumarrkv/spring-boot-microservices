@@ -7,6 +7,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
 import org.springframework.web.client.RestClient;
 
+import io.github.resilience4j.circuitbreaker.annotation.CircuitBreaker;
 import io.github.resilience4j.retry.annotation.Retry;
 
 @Component
@@ -19,6 +20,7 @@ public class ProductServiceClient {
 		this.restClient = restClient;
 	}
 
+	@CircuitBreaker(name = "catalog-service")
 	@Retry(name = "catalog-service", fallbackMethod = "getProductByCodeFallBackMethod")
 	public Optional<Product> getProductByCode(String productCode) {
 		LOGGER.info("Getting product with code :" + productCode);
