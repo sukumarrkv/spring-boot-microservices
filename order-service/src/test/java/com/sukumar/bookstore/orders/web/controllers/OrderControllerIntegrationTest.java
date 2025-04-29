@@ -1,5 +1,7 @@
 package com.sukumar.bookstore.orders.web.controllers;
 
+import java.math.BigDecimal;
+
 import org.hamcrest.Matchers;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
@@ -19,6 +21,7 @@ public class OrderControllerIntegrationTest extends AbstractIntegrationTest{
 		
 		@Test
 		void shouldCreateOrderSuccessfully() {
+			mockGetProductByCode("P100", "test", new BigDecimal(23.33));
 			String payload = """
 				{
 				    "customer": {
