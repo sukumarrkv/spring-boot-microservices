@@ -4,6 +4,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 
+import com.sukumar.bookstore.orders.domain.models.CreateOrderEventRequest;
 import com.sukumar.bookstore.orders.domain.models.CreateOrderRequest;
 import com.sukumar.bookstore.orders.domain.models.CreateOrderResponse;
 
@@ -11,8 +12,10 @@ import com.sukumar.bookstore.orders.domain.models.CreateOrderResponse;
 public class OrderService {
 
 	private static final Logger LOGGER = LoggerFactory.getLogger(OrderService.class);
+	
 	private OrderRepository orderRepository;
 	private OrderValidator orderValidator;
+	private OrderEventService orderEventService;
 
 	public OrderService(OrderRepository orderRepository, OrderValidator orderValidator) {
 		this.orderRepository = orderRepository;
