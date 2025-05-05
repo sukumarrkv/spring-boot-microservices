@@ -1,17 +1,27 @@
 package com.sukumar.bookstore.orders.domain;
 
+import java.util.List;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.data.domain.Sort;
+
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.sukumar.bookstore.orders.domain.models.CreateOrderEventRequest;
 
 public class OrderEventService {
 
+	private static final Logger LOGGER = LoggerFactory.getLogger(OrderEventService.class);
+	
 	private OrderEventRepository orderEventRepository;
 	private ObjectMapper objectMapper;
+	private OrderEventsPublisher orderEventsPublisher;
 	
-	public OrderEventService(OrderEventRepository orderEventRepository, ObjectMapper objectMapper) {
+	public OrderEventService(OrderEventRepository orderEventRepository, ObjectMapper objectMapper, OrderEventsPublisher orderEventsPublisher) {
 		this.orderEventRepository = orderEventRepository;
 		this.objectMapper = objectMapper;
+		this.orderEventsPublisher = orderEventsPublisher;
 	}
 
 	public void saveOrderEvent(CreateOrderEventRequest request) {
@@ -23,9 +33,37 @@ public class OrderEventService {
 		orderEventRepository.save(orderEventEntity);
 	}
 	
+	public void publishOrderEvents() {
+		Sort sort = Sort.by("createdAt").ascending();
+		List<OrderEventEntity> orderEvents = orderEventRepository.findAll(sort);
+		LOGGER.info("Found {} order events to be published", orderEvents.size());
+		for(OrderEventEntity event: orderEvents) {
+			publishEvent(event);
+		}
+	}
+	
 	private String convertJsonToString(Object object) {
 		try {
 			return objectMapper.writeValueAsString(object);
+		} catch (JsonProcessingException e) {
+			throw new RuntimeException(e);
+		}
+	}
+	
+	private void publishEvent(OrderEventEntity orderEventEntity) {
+		OrderEventType eventType = orderEventEntity.getEventType();
+		switch(eventType) {
+		case ORDER_CREATED:
+			CreateOrderEventRequest createOrderEventRequest = convertStringToJson(orderEventEntity.getPayload(), CreateOrderEventRequest.class);
+			orderEventsPublisher.sendCreateOrderRabbitMessage(createOrderEventRequest);
+		default: 
+			LOGGER.warn("Unsupported Event Type: " + eventType);
+		}
+	}
+	
+	private <T> T convertStringToJson(String payload, Class<T> clazz) {
+		try {
+			return objectMapper.readValue(payload, clazz);
 		} catch (JsonProcessingException e) {
 			throw new RuntimeException(e);
 		}

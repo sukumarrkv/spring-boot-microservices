@@ -28,6 +28,8 @@ public class OrderService {
 		orderEntity.setUserName(userName);
 		OrderEntity savedOrder = orderRepository.save(orderEntity);
 		LOGGER.info("Successfully saved order with order number :" + savedOrder.getOrderNumber());
+		CreateOrderEventRequest createOrderEventRequest = OrderEventMapper.createOrderEventFromOrderEntity(orderEntity);
+		orderEventService.saveOrderEvent(createOrderEventRequest);
 		return new CreateOrderResponse(savedOrder.getOrderNumber());
 	}
 	
