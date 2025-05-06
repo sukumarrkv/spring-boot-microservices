@@ -23,5 +23,6 @@ public class OrderEventsPublishingJob {
 	@Scheduled(cron = "${orders.publish-order-events-job-cron}")
 	public void publishOrderEvents() {
 		LOGGER.info("Publishing Order Events at :" + Instant.now());
+		orderEventService.publishOrderEvents();
 	}
 }

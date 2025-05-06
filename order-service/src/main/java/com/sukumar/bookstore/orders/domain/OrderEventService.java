@@ -5,11 +5,13 @@ import java.util.List;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.data.domain.Sort;
+import org.springframework.stereotype.Service;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.sukumar.bookstore.orders.domain.models.CreateOrderEventRequest;
+import com.sukumar.bookstore.orders.domain.models.OrderCreatedEvent;
 
+@Service
 public class OrderEventService {
 
 	private static final Logger LOGGER = LoggerFactory.getLogger(OrderEventService.class);
@@ -24,12 +26,12 @@ public class OrderEventService {
 		this.orderEventsPublisher = orderEventsPublisher;
 	}
 
-	public void saveOrderEvent(CreateOrderEventRequest request) {
+	public void saveOrderEvent(OrderCreatedEvent event) {
 		OrderEventEntity orderEventEntity = new OrderEventEntity();
-		orderEventEntity.setEventId(request.eventId());
+		orderEventEntity.setEventId(event.eventId());
 		orderEventEntity.setEventType(OrderEventType.ORDER_CREATED);
-		orderEventEntity.setOrderNumber(request.orderNumber());
-		orderEventEntity.setPayload(convertJsonToString(request));
+		orderEventEntity.setOrderNumber(event.orderNumber());
+		orderEventEntity.setPayload(convertJsonToString(event));
 		orderEventRepository.save(orderEventEntity);
 	}
 	
@@ -39,6 +41,7 @@ public class OrderEventService {
 		LOGGER.info("Found {} order events to be published", orderEvents.size());
 		for(OrderEventEntity event: orderEvents) {
 			publishEvent(event);
+			orderEventRepository.delete(event);
 		}
 	}
 	
@@ -54,8 +57,8 @@ public class OrderEventService {
 		OrderEventType eventType = orderEventEntity.getEventType();
 		switch(eventType) {
 		case ORDER_CREATED:
-			CreateOrderEventRequest createOrderEventRequest = convertStringToJson(orderEventEntity.getPayload(), CreateOrderEventRequest.class);
-			orderEventsPublisher.sendCreateOrderRabbitMessage(createOrderEventRequest);
+			OrderCreatedEvent orderCreatedEvent = convertStringToJson(orderEventEntity.getPayload(), OrderCreatedEvent.class);
+			orderEventsPublisher.sendCreateOrderRabbitMessage(orderCreatedEvent);
 		default: 
 			LOGGER.warn("Unsupported Event Type: " + eventType);
 		}
