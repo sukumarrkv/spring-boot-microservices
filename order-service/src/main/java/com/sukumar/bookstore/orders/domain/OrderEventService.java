@@ -9,7 +9,10 @@ import org.springframework.stereotype.Service;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.sukumar.bookstore.orders.domain.models.OrderCancelledEvent;
 import com.sukumar.bookstore.orders.domain.models.OrderCreatedEvent;
+import com.sukumar.bookstore.orders.domain.models.OrderDeliveredEvent;
+import com.sukumar.bookstore.orders.domain.models.OrderErrorEvent;
 
 @Service
 public class OrderEventService {
@@ -26,7 +29,7 @@ public class OrderEventService {
 		this.orderEventsPublisher = orderEventsPublisher;
 	}
 
-	public void saveOrderEvent(OrderCreatedEvent event) {
+	public void saveOrderCreatedEvent(OrderCreatedEvent event) {
 		OrderEventEntity orderEventEntity = new OrderEventEntity();
 		orderEventEntity.setEventId(event.eventId());
 		orderEventEntity.setEventType(OrderEventType.ORDER_CREATED);
@@ -35,6 +38,32 @@ public class OrderEventService {
 		orderEventRepository.save(orderEventEntity);
 	}
 	
+	public void saveOrderDeliveredEvent(OrderDeliveredEvent event) {
+		OrderEventEntity orderEventEntity = new OrderEventEntity();
+		orderEventEntity.setEventId(event.eventId());
+		orderEventEntity.setEventType(OrderEventType.ORDER_DELIVERED);
+		orderEventEntity.setOrderNumber(event.orderNumber());
+		orderEventEntity.setPayload(convertJsonToString(event));
+		orderEventRepository.save(orderEventEntity);
+	}
+	
+	public void saveOrderCancelledEvent(OrderCancelledEvent event) {
+		OrderEventEntity orderEventEntity = new OrderEventEntity();
+		orderEventEntity.setEventId(event.eventId());
+		orderEventEntity.setEventType(OrderEventType.ORDER_CANCELLED);
+		orderEventEntity.setOrderNumber(event.orderNumber());
+		orderEventEntity.setPayload(convertJsonToString(event));
+		orderEventRepository.save(orderEventEntity);
+	}
+	
+	public void saveOrderErrorEvent(OrderErrorEvent event) {
+		OrderEventEntity orderEventEntity = new OrderEventEntity();
+		orderEventEntity.setEventId(event.eventId());
+		orderEventEntity.setEventType(OrderEventType.ORDER_PROCESSING_FAILED);
+		orderEventEntity.setOrderNumber(event.orderNumber());
+		orderEventEntity.setPayload(convertJsonToString(event));
+		orderEventRepository.save(orderEventEntity);
+	}
 	public void publishOrderEvents() {
 		Sort sort = Sort.by("createdAt").ascending();
 		List<OrderEventEntity> orderEvents = orderEventRepository.findAll(sort);
@@ -58,7 +87,16 @@ public class OrderEventService {
 		switch(eventType) {
 		case ORDER_CREATED:
 			OrderCreatedEvent orderCreatedEvent = convertStringToJson(orderEventEntity.getPayload(), OrderCreatedEvent.class);
-			orderEventsPublisher.sendCreateOrderRabbitMessage(orderCreatedEvent);
+			orderEventsPublisher.sendOrderCreatedRabbitMessage(orderCreatedEvent);
+		case ORDER_DELIVERED:
+			OrderDeliveredEvent orderDeliveredEvent = convertStringToJson(orderEventEntity.getPayload(), OrderDeliveredEvent.class);
+			orderEventsPublisher.sendOrderDeliveredRabbitMessage(orderDeliveredEvent);
+		case ORDER_CANCELLED:
+			OrderCancelledEvent orderCancelledEvent = convertStringToJson(orderEventEntity.getPayload(), OrderCancelledEvent.class);
+			orderEventsPublisher.sendOrderCancelledRabbitMessage(orderCancelledEvent);
+		case ORDER_PROCESSING_FAILED:
+			OrderErrorEvent orderErrorEvent = convertStringToJson(orderEventEntity.getPayload(), OrderErrorEvent.class);
+			orderEventsPublisher.sendOrderErrorRabbitMessage(orderErrorEvent);
 		default: 
 			LOGGER.warn("Unsupported Event Type: " + eventType);
 		}

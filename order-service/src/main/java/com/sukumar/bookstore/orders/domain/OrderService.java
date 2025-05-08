@@ -34,7 +34,7 @@ public class OrderService {
 		OrderEntity savedOrder = orderRepository.save(orderEntity);
 		LOGGER.info("Successfully saved order with order number :" + savedOrder.getOrderNumber());
 		OrderCreatedEvent orderCreatedEvent = OrderEventMapper.buildOrderCreatedEventFromOrderEntity(orderEntity);
-		orderEventService.saveOrderEvent(orderCreatedEvent);
+		orderEventService.saveOrderCreatedEvent(orderCreatedEvent);
 		return new CreateOrderResponse(savedOrder.getOrderNumber());
 	}
 	
@@ -47,12 +47,30 @@ public class OrderService {
 	}
 	
 	private void processEachNewOrder(OrderEntity orderEntity) {
-		if(isValidDeliveryCountry(orderEntity.getDeliveryAddress().country())) {
-			LOGGER.info("Order {} is successfully delivered", orderEntity.getOrderNumber());
+		try {
+			if(isValidDeliveryCountry(orderEntity.getDeliveryAddress().country())) {
+				LOGGER.info("Order {} is successfully delivered", orderEntity.getOrderNumber());
+				updateOrderStatus(orderEntity.getOrderNumber(), OrderStatus.DELIVERED);
+				orderEventService.saveOrderDeliveredEvent(OrderEventMapper.buildOrderDeliveredEventFromOrderEntity(orderEntity));
+			} else {
+				LOGGER.info("Order {} cannot be delivered", orderEntity.getOrderNumber());
+				updateOrderStatus(orderEntity.getOrderNumber(), OrderStatus.CANCELLED);
+				orderEventService.saveOrderCancelledEvent(OrderEventMapper.buildOrderCancelledEventFromOrderEntity(orderEntity, "Order cannot be delivered to the location"));
+			}
+		} catch( Exception e) {
+			LOGGER.error("Error occurred while processing order {}", orderEntity.getOrderNumber());
+			updateOrderStatus(orderEntity.getOrderNumber(), OrderStatus.ERROR);
+			orderEventService.saveOrderErrorEvent(OrderEventMapper.builOrderErrorEventFromOrderEntity(orderEntity, e.getMessage()));
 		}
 	}
 	
 	private boolean isValidDeliveryCountry(String country) {
 		return DELIVERY_ALLOWED_COUNTRIES.contains(country.toUpperCase());
+	}
+	
+	public void updateOrderStatus(String orderNumber, OrderStatus orderStatus) {
+		OrderEntity orderEntity = orderRepository.findbyOrderNumber(orderNumber).orElseThrow();
+		orderEntity.setStatus(orderStatus);
+		orderRepository.save(orderEntity);
 	}
 }

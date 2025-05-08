@@ -3,7 +3,7 @@ package com.sukumar.bookstore.orders.domain.models;
 import java.time.LocalDateTime;
 import java.util.Set;
 
-public record OrderCreatedEvent(
+public record OrderDeliveredEvent(
 		String orderNumber,
 		String eventId,
 		Set<OrderItem> items,
