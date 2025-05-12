@@ -69,7 +69,7 @@ public class OrderService {
 	}
 	
 	public void updateOrderStatus(String orderNumber, OrderStatus orderStatus) {
-		OrderEntity orderEntity = orderRepository.findbyOrderNumber(orderNumber).orElseThrow();
+		OrderEntity orderEntity = orderRepository.findByOrderNumber(orderNumber).orElseThrow();
 		orderEntity.setStatus(orderStatus);
 		orderRepository.save(orderEntity);
 	}

@@ -20,9 +20,9 @@ public class OrderProcessingJob {
 		this.orderService = orderService;
 	}
 	
-	@Scheduled(cron = "${orders.order-processing-job-cron}")
+	@Scheduled(cron = "${orders.new-order-processing-job-cron}")
 	public void processNewOrders() {
 		LOGGER.info("Processing order at :" + Instant.now());
-
+		orderService.processNewOrders();;
 	}
 }

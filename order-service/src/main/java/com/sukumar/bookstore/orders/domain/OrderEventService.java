@@ -88,15 +88,19 @@ public class OrderEventService {
 		case ORDER_CREATED:
 			OrderCreatedEvent orderCreatedEvent = convertStringToJson(orderEventEntity.getPayload(), OrderCreatedEvent.class);
 			orderEventsPublisher.sendOrderCreatedRabbitMessage(orderCreatedEvent);
+			break;
 		case ORDER_DELIVERED:
 			OrderDeliveredEvent orderDeliveredEvent = convertStringToJson(orderEventEntity.getPayload(), OrderDeliveredEvent.class);
 			orderEventsPublisher.sendOrderDeliveredRabbitMessage(orderDeliveredEvent);
+			break;
 		case ORDER_CANCELLED:
 			OrderCancelledEvent orderCancelledEvent = convertStringToJson(orderEventEntity.getPayload(), OrderCancelledEvent.class);
 			orderEventsPublisher.sendOrderCancelledRabbitMessage(orderCancelledEvent);
+			break;
 		case ORDER_PROCESSING_FAILED:
 			OrderErrorEvent orderErrorEvent = convertStringToJson(orderEventEntity.getPayload(), OrderErrorEvent.class);
 			orderEventsPublisher.sendOrderErrorRabbitMessage(orderErrorEvent);
+			break;
 		default: 
 			LOGGER.warn("Unsupported Event Type: " + eventType);
 		}
