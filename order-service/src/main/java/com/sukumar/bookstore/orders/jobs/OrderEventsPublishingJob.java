@@ -9,6 +9,9 @@ import org.springframework.stereotype.Component;
 
 import com.sukumar.bookstore.orders.domain.OrderEventService;
 
+import net.javacrumbs.shedlock.core.LockAssert;
+import net.javacrumbs.shedlock.spring.annotation.SchedulerLock;
+
 @Component
 public class OrderEventsPublishingJob {
 	
@@ -21,7 +24,9 @@ public class OrderEventsPublishingJob {
 	}
 	
 	@Scheduled(cron = "${orders.publish-order-events-job-cron}")
+	@SchedulerLock(name = "publishOrderEvents")
 	public void publishOrderEvents() {
+		LockAssert.assertLocked();
 		LOGGER.info("Publishing Order Events at :" + Instant.now());
 		orderEventService.publishOrderEvents();
 	}

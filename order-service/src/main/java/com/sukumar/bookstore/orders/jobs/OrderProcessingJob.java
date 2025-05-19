@@ -9,6 +9,9 @@ import org.springframework.stereotype.Component;
 
 import com.sukumar.bookstore.orders.domain.OrderService;
 
+import net.javacrumbs.shedlock.core.LockAssert;
+import net.javacrumbs.shedlock.spring.annotation.SchedulerLock;
+
 @Component
 public class OrderProcessingJob {
 
@@ -21,7 +24,9 @@ public class OrderProcessingJob {
 	}
 	
 	@Scheduled(cron = "${orders.new-order-processing-job-cron}")
+	@SchedulerLock(name = "processNewOrders")
 	public void processNewOrders() {
+		LockAssert.assertLocked();
 		LOGGER.info("Processing order at :" + Instant.now());
 		orderService.processNewOrders();;
 	}
