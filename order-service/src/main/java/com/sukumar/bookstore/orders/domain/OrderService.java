@@ -1,6 +1,7 @@
 package com.sukumar.bookstore.orders.domain;
 
 import java.util.List;
+import java.util.Optional;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -9,7 +10,9 @@ import org.springframework.stereotype.Service;
 import com.sukumar.bookstore.orders.domain.models.CreateOrderRequest;
 import com.sukumar.bookstore.orders.domain.models.CreateOrderResponse;
 import com.sukumar.bookstore.orders.domain.models.OrderCreatedEvent;
+import com.sukumar.bookstore.orders.domain.models.OrderDTO;
 import com.sukumar.bookstore.orders.domain.models.OrderStatus;
+import com.sukumar.bookstore.orders.domain.models.OrderSummary;
 
 @Service
 public class OrderService {
@@ -72,5 +75,15 @@ public class OrderService {
 		OrderEntity orderEntity = orderRepository.findByOrderNumber(orderNumber).orElseThrow();
 		orderEntity.setStatus(orderStatus);
 		orderRepository.save(orderEntity);
+	}
+	
+	public List<OrderSummary> getOrderForUser(String userName) {
+		return orderRepository.findByUserName(userName);
+	}
+	
+	public OrderDTO getOrderDetailsByOrderNumber(String orderNumber, String orderStatus) {
+		Optional<OrderDTO> optionalOrderDTO = orderRepository.findByOrderNumberAndUserName(orderNumber, orderStatus)
+				                            .map(OrderMapper::convertToOrderDTO);
+		return null;
 	}
 }

@@ -1,5 +1,7 @@
 package com.sukumar.bookstore.orders.web.controllers;
 
+import java.util.List;
+
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -11,6 +13,7 @@ import com.sukumar.bookstore.orders.domain.OrderService;
 import com.sukumar.bookstore.orders.domain.SecurityService;
 import com.sukumar.bookstore.orders.domain.models.CreateOrderRequest;
 import com.sukumar.bookstore.orders.domain.models.CreateOrderResponse;
+import com.sukumar.bookstore.orders.domain.models.OrderSummary;
 
 import jakarta.validation.Valid;
 
@@ -31,5 +34,10 @@ public class OrderController {
 	public ResponseEntity<CreateOrderResponse> createOrder(@Valid @RequestBody CreateOrderRequest createOrderRequest) {
 		String userName = securityService.getLoginUserName();
 		return ResponseEntity.status(HttpStatus.CREATED).body(orderServcie.createOrder(createOrderRequest, userName));
+	}
+	
+	public ResponseEntity<List<OrderSummary>> getOrdersForUser() {
+		String userName = securityService.getLoginUserName();
+		return ResponseEntity.status(HttpStatus.OK).body(orderServcie.getOrderForUser(userName));
 	}
 }
