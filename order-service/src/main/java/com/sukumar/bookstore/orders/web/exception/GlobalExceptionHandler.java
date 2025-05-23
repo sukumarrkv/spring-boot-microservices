@@ -63,4 +63,16 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler{
 		problemDetail.setProperty("timestamp", Instant.now());
 		return problemDetail;
 	}
+	
+	@ExceptionHandler(OrderNotFoundException.class)
+	public ProblemDetail handleOrderNotFoundException(OrderNotFoundException onfe) {
+		ProblemDetail problemDetail = ProblemDetail.forStatusAndDetail(HttpStatus.BAD_REQUEST, onfe.getMessage());
+		problemDetail.setTitle("Order Not Found");
+		problemDetail.setType(BAD_REQUEST_TYPE);
+		problemDetail.setProperty("service", SERVICE_NAME);
+		problemDetail.setProperty("error_category", "Generic");
+		problemDetail.setProperty("timestamp", Instant.now());
+		return problemDetail;
+		
+	}
 }

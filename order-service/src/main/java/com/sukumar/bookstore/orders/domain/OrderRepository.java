@@ -18,5 +18,6 @@ public interface OrderRepository extends JpaRepository<OrderEntity, Long>{
 	@Query("select new com.sukumar.bookstore.orders.domain.models.OrderSummary(o.orderNumber, o.status) from OrderEntity o where o.userName= :userName")
 	public List<OrderSummary> findByUserName(String userName);
 	
-	public Optional<OrderEntity> findByOrderNumberAndUserName(String orderNumber, String orderStatus);
+	@Query("Select distinct o from OrderEntity o left join fetch o.items where o.orderNumber=:orderNumber and o.userName=:userName")
+	public Optional<OrderEntity> findByOrderNumberAndUserName(String orderNumber, String userName);
 }

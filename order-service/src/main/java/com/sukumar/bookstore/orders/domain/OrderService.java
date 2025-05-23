@@ -13,6 +13,7 @@ import com.sukumar.bookstore.orders.domain.models.OrderCreatedEvent;
 import com.sukumar.bookstore.orders.domain.models.OrderDTO;
 import com.sukumar.bookstore.orders.domain.models.OrderStatus;
 import com.sukumar.bookstore.orders.domain.models.OrderSummary;
+import com.sukumar.bookstore.orders.web.exception.OrderNotFoundException;
 
 @Service
 public class OrderService {
@@ -81,9 +82,9 @@ public class OrderService {
 		return orderRepository.findByUserName(userName);
 	}
 	
-	public OrderDTO getOrderDetailsByOrderNumber(String orderNumber, String orderStatus) {
-		Optional<OrderDTO> optionalOrderDTO = orderRepository.findByOrderNumberAndUserName(orderNumber, orderStatus)
+	public OrderDTO getOrderDetailsByOrderNumber(String orderNumber, String userName) {
+		Optional<OrderDTO> optionalOrderDTO = orderRepository.findByOrderNumberAndUserName(orderNumber, userName)
 				                            .map(OrderMapper::convertToOrderDTO);
-		return null;
+		return optionalOrderDTO.orElseThrow(() -> new OrderNotFoundException("Order not found for order number: "+ orderNumber));
 	}
 }
