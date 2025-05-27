@@ -13,6 +13,7 @@ import org.springframework.test.context.jdbc.Sql;
 
 import com.sukumar.bookstore.orders.AbstractIntegrationTest;
 import com.sukumar.bookstore.orders.domain.models.CreateOrderRequest;
+import com.sukumar.bookstore.orders.domain.models.OrderStatus;
 import com.sukumar.bookstore.orders.domain.models.OrderSummary;
 import com.sukumar.bookstore.orders.testdata.TestDataFactory;
 
@@ -79,6 +80,14 @@ public class OrderControllerIntegrationTest extends AbstractIntegrationTest{
 			           .extract().body().as(new TypeRef<>() {});
 			
 			assertEquals(2, orders.size());
+		}
+		
+		@Test
+		void shouldGetOrderByOrderNumberTest() {
+			String orderNumber ="order-456";
+			RestAssured.given().when().get("/api/order/{orderNumber}", orderNumber).then().statusCode(HttpStatus.OK.value())
+			           .body("orderNumber", Matchers.is(orderNumber))
+			           .body("items.size()", Matchers.is(1));
 		}
 	}
 }
