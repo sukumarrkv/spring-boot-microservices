@@ -1,19 +1,26 @@
 package com.sukumar.bookstore.orders.web.controllers;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
+
 import java.math.BigDecimal;
+import java.util.List;
 
 import org.hamcrest.Matchers;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 import org.springframework.http.HttpStatus;
+import org.springframework.test.context.jdbc.Sql;
 
 import com.sukumar.bookstore.orders.AbstractIntegrationTest;
 import com.sukumar.bookstore.orders.domain.models.CreateOrderRequest;
+import com.sukumar.bookstore.orders.domain.models.OrderSummary;
 import com.sukumar.bookstore.orders.testdata.TestDataFactory;
 
 import io.restassured.RestAssured;
+import io.restassured.common.mapper.TypeRef;
 import io.restassured.http.ContentType;
 
+@Sql("/test-data.sql")
 public class OrderControllerIntegrationTest extends AbstractIntegrationTest{
 
 	@Nested //New feature in junit 5 where we can create nested test classes
@@ -60,6 +67,18 @@ public class OrderControllerIntegrationTest extends AbstractIntegrationTest{
 			RestAssured.given().contentType(ContentType.JSON).body(orderRequest)
 			.post("/api/order/").then().statusCode(HttpStatus.BAD_REQUEST.value())
 			.body("errors", Matchers.contains("Customer phone number is required"));
+		}
+	}
+	
+	@Nested
+	class GetOrderTests {
+		
+		@Test
+		void shouldGetAllOrders() {
+			List<OrderSummary> orders = RestAssured.given().when().get("/api/order/").then().statusCode(HttpStatus.OK.value())
+			           .extract().body().as(new TypeRef<>() {});
+			
+			assertEquals(2, orders.size());
 		}
 	}
 }

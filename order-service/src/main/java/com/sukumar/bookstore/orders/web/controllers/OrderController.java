@@ -42,7 +42,7 @@ public class OrderController {
 	@GetMapping
 	public ResponseEntity<List<OrderSummary>> getOrdersForUser() {
 		String userName = securityService.getLoginUserName();
-		return ResponseEntity.status(HttpStatus.OK).body(orderService.getOrderForUser(userName));
+		return ResponseEntity.status(HttpStatus.OK).body(orderService.getOrdersForUser(userName));
 	}
 	
 	@GetMapping("/{orderNumber}")

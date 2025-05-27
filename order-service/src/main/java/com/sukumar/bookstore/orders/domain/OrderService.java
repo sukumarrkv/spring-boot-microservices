@@ -78,7 +78,7 @@ public class OrderService {
 		orderRepository.save(orderEntity);
 	}
 	
-	public List<OrderSummary> getOrderForUser(String userName) {
+	public List<OrderSummary> getOrdersForUser(String userName) {
 		return orderRepository.findByUserName(userName);
 	}
 	
