@@ -9,14 +9,16 @@ import org.springframework.amqp.rabbit.connection.ConnectionFactory;
 import org.springframework.amqp.rabbit.core.RabbitTemplate;
 import org.springframework.amqp.support.converter.Jackson2JsonMessageConverter;
 import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Configuration;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 
-public class RabbitMQConfiguration {
+@Configuration
+public class RabbitMQConfig {
 
 	private ApplicationProperties applicationProperties;
 
-	public RabbitMQConfiguration(ApplicationProperties applicationProperties) {
+	public RabbitMQConfig(ApplicationProperties applicationProperties) {
 		this.applicationProperties = applicationProperties;
 	}
 	
@@ -25,14 +27,16 @@ public class RabbitMQConfiguration {
 		return new DirectExchange(applicationProperties.orderEventsExchange());
 	}
 	
+	//For all below queue routing key name is same as the queue name 
+	
 	@Bean
-	Queue newOrderQueue() {
+	Queue newOrdersQueue() {
 		return QueueBuilder.durable(applicationProperties.newOrdersQueue()).build();
 	}
 	
 	@Bean
-	Binding newOrderQueueBinding() {
-		return BindingBuilder.bind(newOrderQueue()).to(directExchange()).with(applicationProperties.newOrdersQueue());
+	Binding newOrdersQueueBinding() {
+		return BindingBuilder.bind(newOrdersQueue()).to(directExchange()).with(applicationProperties.newOrdersQueue());
 	}
 	
 	@Bean
@@ -65,15 +69,15 @@ public class RabbitMQConfiguration {
 		return BindingBuilder.bind(errorOrdersQueue()).to(directExchange()).with(applicationProperties.errorOrdersQueue());
 	}
 	
-	@Bean
-	Jackson2JsonMessageConverter jackson2JsonMessageConverter(ObjectMapper objectMapper) {
-		return new Jackson2JsonMessageConverter(objectMapper);
-	}
-	
-	@Bean
-	RabbitTemplate rabbitTemplate(ConnectionFactory connectionFactory, ObjectMapper objectMapper) {
-		RabbitTemplate rabbitTemplate = new RabbitTemplate(connectionFactory);
-		rabbitTemplate.setMessageConverter(jackson2JsonMessageConverter(objectMapper));
-		return rabbitTemplate;
-	}
+    @Bean
+    public RabbitTemplate rabbitTemplate(ConnectionFactory connectionFactory, ObjectMapper objectMapper) {
+        final var rabbitTemplate = new RabbitTemplate(connectionFactory);
+        rabbitTemplate.setMessageConverter(jacksonConverter(objectMapper));
+        return rabbitTemplate;
+    }
+
+    @Bean
+    public Jackson2JsonMessageConverter jacksonConverter(ObjectMapper mapper) {
+        return new Jackson2JsonMessageConverter(mapper);
+    }
 }
