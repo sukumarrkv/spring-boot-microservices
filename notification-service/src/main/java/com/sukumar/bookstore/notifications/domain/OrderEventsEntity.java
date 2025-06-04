@@ -25,6 +25,11 @@ public class OrderEventsEntity {
 	private LocalDateTime createdAt = LocalDateTime.now();
 	
 	private LocalDateTime updatedAt;
+	
+	public OrderEventsEntity(String eventId) {
+		super();
+		this.eventId = eventId;
+	}
 
 	public int getId() {
 		return id;
