@@ -13,7 +13,7 @@ import org.springframework.context.annotation.Configuration;
 
 import jakarta.annotation.PostConstruct;
 
-@Configuration
+//@Configuration
 public class SwaggerConfiguration {
 
 	private RouteDefinitionLocator locator;
@@ -31,7 +31,7 @@ public class SwaggerConfiguration {
 	public void init() {
 		List<RouteDefinition> routeDefinitions = locator.getRouteDefinitions().collectList().block();
 		Set<SwaggerUrl> urls = new HashSet<>();
-		routeDefinitions.stream().filter(routeDefinition -> routeDefinition.getId().matches("*-service"))
+		routeDefinitions.stream().filter(routeDefinition -> routeDefinition.getId().matches(".*-service"))
 		                .forEach(routeDefinition -> {
 		                	String serviceName = routeDefinition.getId().replaceAll("-service", "");
 		                	SwaggerUrl swaggerUrl = new SwaggerUrl(serviceName, Constants.DEFAULT_API_DOCS_URL + "/" +serviceName, null);
