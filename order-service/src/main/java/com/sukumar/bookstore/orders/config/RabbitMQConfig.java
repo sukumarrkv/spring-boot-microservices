@@ -70,15 +70,15 @@ public class RabbitMQConfig {
 		return BindingBuilder.bind(errorOrdersQueue()).to(directExchange()).with(applicationProperties.errorOrdersQueue());
 	}
 	
-	@Bean
-	Jackson2JsonMessageConverter jackson2JsonMessageConverter(ObjectMapper objectMapper) {
-		return new Jackson2JsonMessageConverter(objectMapper);
-	}
-	
-	@Bean
-	RabbitTemplate rabbitTemplate(ConnectionFactory connectionFactory, ObjectMapper objectMapper) {
-		RabbitTemplate rabbitTemplate = new RabbitTemplate(connectionFactory);
-		rabbitTemplate.setMessageConverter(jackson2JsonMessageConverter(objectMapper));
-		return rabbitTemplate;
-	}
+    @Bean
+    public RabbitTemplate rabbitTemplate(ConnectionFactory connectionFactory, ObjectMapper objectMapper) {
+        final var rabbitTemplate = new RabbitTemplate(connectionFactory);
+        rabbitTemplate.setMessageConverter(jacksonConverter(objectMapper));
+        return rabbitTemplate;
+    }
+
+    @Bean
+    public Jackson2JsonMessageConverter jacksonConverter(ObjectMapper mapper) {
+        return new Jackson2JsonMessageConverter(mapper);
+    }
 }
