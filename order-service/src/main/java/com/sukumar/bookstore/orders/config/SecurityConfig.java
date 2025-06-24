@@ -1,4 +1,4 @@
-package com.sukumar.bookstore.orders.clients.catalog;
+package com.sukumar.bookstore.orders.config;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
