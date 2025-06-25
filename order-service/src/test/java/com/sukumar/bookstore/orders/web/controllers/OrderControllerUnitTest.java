@@ -11,6 +11,8 @@ import org.mockito.BDDMockito;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.http.MediaType;
+import org.springframework.security.test.context.support.WithMockUser;
+import org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors;
 import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
@@ -45,8 +47,11 @@ public class OrderControllerUnitTest {
 	
 	@ParameterizedTest(name = "{index}-{0}")
 	@MethodSource("getCreateOrderRequestTestData")
+	@WithMockUser
 	void shouldReturnBadRequestWhenOrderPayloadIsInvalid(CreateOrderRequest request) throws Exception {
-		mockMvc.perform(MockMvcRequestBuilders.post("/api/order/").contentType(MediaType.APPLICATION_JSON)
+		mockMvc.perform(MockMvcRequestBuilders.post("/api/order/")
+				.with(SecurityMockMvcRequestPostProcessors.csrf())
+				.contentType(MediaType.APPLICATION_JSON)
 			   .content(objectMapper.writeValueAsString(request)))
 		       .andExpect(MockMvcResultMatchers.status().isBadRequest());
 	}
