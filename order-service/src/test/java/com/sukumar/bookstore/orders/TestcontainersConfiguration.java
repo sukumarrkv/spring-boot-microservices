@@ -14,7 +14,7 @@ import dasniko.testcontainers.keycloak.KeycloakContainer;
 @TestConfiguration(proxyBeanMethods = false)
 class TestcontainersConfiguration {
 
-	private static final String KEYCLOAK_IMAGE = "quay.io/keycloak/keycloak:26.0";
+	private static final String KEYCLOAK_IMAGE = "quay.io/keycloak/keycloak:24.0.2";
 	private static final String REALM_IMPORT_FILE_PATH = "";
 	private static final String REALM_NAME = "bookstore";
 	@Bean

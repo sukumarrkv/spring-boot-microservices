@@ -30,6 +30,12 @@ public class ProductController {
 	
 	@GetMapping("/{code}")
 	public ResponseEntity<Product> getProductByCode(@PathVariable String code) {
+//		try {
+//			Thread.sleep(6000);
+//		} catch (InterruptedException e) {
+//			// TODO Auto-generated catch block
+//			e.printStackTrace();
+//		}
 		return new ResponseEntity<Product>(productService.getProductByCode(code), HttpStatus.OK);
 	}
 }
