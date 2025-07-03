@@ -31,29 +31,34 @@ import io.restassured.RestAssured;
 @Import(TestcontainersConfiguration.class)
 public class AbstractIntegrationTest {
 
+	private static final String CLIENT_ID = "bookstore-webapp";
+	private static final String CLIENT_SECRET = "pnISniEewiC91pwrMDpf0ZufOoOvu0aS";
+	private static final String USERNAME = "sukumar";
+	private static final String PASSWORD = "sukumar1234";
+
     @Autowired
     OAuth2ResourceServerProperties oAuth2ResourceServerProperties;
     
 	@LocalServerPort
 	private int port;
 	
-	static WireMockContainer wireMockContainer = new WireMockContainer("wiremock/wiremock:3.5.2-alpine");
+	//static WireMockContainer wireMockContainer = new WireMockContainer("wiremock/wiremock:3.5.2-alpine");
 
 	@BeforeEach
 	void setUp() {
 		RestAssured.port = port;
 	}
 	
-	@BeforeAll
-	static void beforeAll() {
-		wireMockContainer.start();
-		WireMock.configureFor(wireMockContainer.getHost(), wireMockContainer.getPort());
-	}
+//	@BeforeAll
+//	static void beforeAll() {
+//		wireMockContainer.start();
+//		//WireMock.configureFor(wireMockContainer.getHost(), wireMockContainer.getPort());
+//	}
 	
-	@DynamicPropertySource
-	static void configureProperties(DynamicPropertyRegistry registry) {
-		registry.add("orders.catalog-service-url", wireMockContainer::getBaseUrl);
-	}
+//	@DynamicPropertySource
+//	static void configureProperties(DynamicPropertyRegistry registry) {
+//		registry.add("orders.catalog-service-url", wireMockContainer::getBaseUrl);
+//	}
 	
 	protected void mockGetProductByCode(String code, String name, BigDecimal price) {
 		WireMock.stubFor(WireMock.get(WireMock.urlMatching("/api/products/" + code))
@@ -75,10 +80,10 @@ public class AbstractIntegrationTest {
 		httpHeaders.setContentType(MediaType.APPLICATION_FORM_URLENCODED);
 		MultiValueMap<String, String> map = new LinkedMultiValueMap<>();
 		map.put(OAuth2Constants.GRANT_TYPE, Collections.singletonList(OAuth2Constants.PASSWORD));
-		map.put(OAuth2Constants.CLIENT_ID, Collections.singletonList(""));
-		map.put(OAuth2Constants.CLIENT_SECRET, Collections.singletonList(""));
-		map.put(OAuth2Constants.USERNAME, Collections.singletonList(""));
-		map.put(OAuth2Constants.PASSWORD, Collections.singletonList(""));
+		map.put(OAuth2Constants.CLIENT_ID, Collections.singletonList(CLIENT_ID));
+		map.put(OAuth2Constants.CLIENT_SECRET, Collections.singletonList(CLIENT_SECRET));
+		map.put(OAuth2Constants.USERNAME, Collections.singletonList(USERNAME));
+		map.put(OAuth2Constants.PASSWORD, Collections.singletonList(PASSWORD));
 		
 		String authServerUrl = oAuth2ResourceServerProperties.getJwt().getIssuerUri() + "/protocol/openid-connect/token";
 		
