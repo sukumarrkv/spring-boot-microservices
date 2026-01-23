@@ -1,0 +1,37 @@
+<div>
+    <div>
+        <app-pagination [productResponse]="productResponse()"></app-pagination>
+        <div class="row row-cols-1 row-cols-md-5">
+            @for (product of products(); track product.code) {
+                <div class="col mb-3">
+                    <div class="card h-100 product">
+
+                        <img [src]="product.imageUrl"
+                             class="card-img-top"
+                             height="300" width="200"
+                        />
+
+                        <div class="card-body">
+                            <h5 class="card-title"
+                                data-toggle="tooltip"
+                                data-placement="top"
+                                x-text="product.name">{{product.name}}</h5>
+                            <p class="card-text"
+                               data-toggle="tooltip"
+                               data-placement="top"
+                               x-text="'Price: $'+product.price"
+                            >Price: ${{product.price}}</p>
+                        </div>
+                        <div class="card-footer" style="background: transparent; border-top: 0;">
+                            <div class="d-grid gap-2">
+                                <button class="btn btn-primary">
+                                    Add to Cart
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            }
+        </div>
+    </div>
+</div>

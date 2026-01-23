@@ -1,0 +1,52 @@
+/* Basic Reset and Styling */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box; /* Ensures padding/border doesn't affect element width */
+}
+
+body {
+    font-family: sans-serif;
+    padding-top: 80px; /* Add padding to body to prevent content from hiding under a potentially fixed header */
+}
+
+/* Header Styling */
+.site-header {
+    background-color: #333; /* Dark background color */
+    color: white;
+    padding: 10px 20px;
+    display: flex; /* Use Flexbox for layout */
+    justify-content: space-between; /* Puts space between the logo and navigation */
+    align-items: center; /* Vertically centers the items */
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+/* .site-logo {
+    color: white;
+    text-decoration: none;
+    font-size: 1.5em;
+    font-weight: bold;
+} */
+
+/* Navigation Styling */
+.main-nav  {
+    display: flex; /* Display list items horizontally */
+    justify-content: flex-end;
+}
+
+.main-nav div {
+  padding: 10px 15px;
+}
+
+.main-nav a {
+    color: white;
+    text-decoration: none; /* Remove underlines from links */
+    padding: 10px 15px;
+    display: block; /* Makes the entire padding area clickable */
+    transition: background-color 0.3s; /* Smooth transition for hover effect */
+}
+
+.main-nav a:hover {
+    background-color: #555; /* Change background color on hover */
+    border-radius: 4px;
+}
