@@ -14,7 +14,6 @@ import { ActivatedRoute } from '@angular/router';
 })
 export class ProductComponent implements OnInit {
   products = signal<Product[]>([]);
-  private productService = inject(ProductService);
   page = input<string>('0');
   productResponse = signal<ProductResponse>({
     data: [],
@@ -26,13 +25,11 @@ export class ProductComponent implements OnInit {
     hasNext: true,
     hasPrevious:  false
   });
+  private productService = inject(ProductService);
   private activatedRoute = inject(ActivatedRoute);
   private destroRef = inject(DestroyRef);
   ngOnInit(): void {
-    console.log('Page number', this.page())
-    //this.loadProducts(this.page());
     const queryParamsSubscription = this.activatedRoute.queryParams.subscribe(params => {
-      console.log("Inside activated route");
       this.loadProducts(params['page']);
     })
 
@@ -49,5 +46,9 @@ export class ProductComponent implements OnInit {
         console.log(this.productResponse());
       }
     })
+  }
+
+  addToCart(product: Product) {
+
   }
 }

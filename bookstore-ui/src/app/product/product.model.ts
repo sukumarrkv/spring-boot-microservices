@@ -16,3 +16,9 @@ export interface ProductResponse {
 	hasNext: boolean
 	hasPrevious:  boolean
 }
+
+export interface CartRequest {
+  items: Product[],
+  totalAmount: number
+	quantity: number
+}
