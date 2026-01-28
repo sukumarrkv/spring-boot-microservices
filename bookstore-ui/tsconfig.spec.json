@@ -10,5 +10,5 @@
   },
   "include": [
     "src/**/*.ts"
-, "src/app/product/product.component.ts"  ]
+, "src/app/product/product.component.ts", "src/app/cart/cart.component.ts"  ]
 }

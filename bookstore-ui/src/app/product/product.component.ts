@@ -4,6 +4,7 @@ import { ProductService } from './product.service';
 import { HeaderComponent } from "../core/header/header.component";
 import { PaginationComponent } from "./pagination/pagination.component";
 import { ActivatedRoute } from '@angular/router';
+import { CartService } from '../cart/cart.service';
 
 @Component({
   selector: 'app-product',
@@ -28,6 +29,8 @@ export class ProductComponent implements OnInit {
   private productService = inject(ProductService);
   private activatedRoute = inject(ActivatedRoute);
   private destroRef = inject(DestroyRef);
+  private cartService = inject(CartService);
+
   ngOnInit(): void {
     const queryParamsSubscription = this.activatedRoute.queryParams.subscribe(params => {
       this.loadProducts(params['page']);
@@ -49,6 +52,6 @@ export class ProductComponent implements OnInit {
   }
 
   addToCart(product: Product) {
-
+    this.cartService.addToCart(product);
   }
 }
