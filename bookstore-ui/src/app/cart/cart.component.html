@@ -1,9 +1,10 @@
 
 <div class="col-md-8 offset-md-2">
-
-    <!-- <div x-show="cart.items.length == 0">
-        <h3>Your cart is empty. <a href="/">Continue shopping</a></h3>
-    </div> -->
+    @if (cart.items.length === 0) {
+        <div>
+            <h3>Your cart is empty. <a routerLink="/products">Continue shopping</a></h3>
+        </div>
+    } @else {
     <div class="pb-3">
         <table class="table">
             <thead>
@@ -15,88 +16,97 @@
             </tr>
             </thead>
             <tbody>
-            <template>
-                <tr>
-                    <td>name</td>
-                    <td>price</td>
-                    <td>
-                        <input type="number" min="0">
-                    </td>
-                    <td>subTotal</td>
-                </tr>
-            </template>
+            @for(item of cart.items; track item.code) {
+                <template>
+                    <tr>
+                        <td>{{ item.name }}</td>
+                        <td>{{ item.price }}</td>
+                        <td>
+                            <input type="number" min="0"/>
+                        </td>
+                        <td>{{ getSubTotal(item) }}</td>
+                    </tr>
+                </template>
+            }
             </tbody>
             <tfoot>
             <tr>
                 <th colspan="3"></th>
                 <th colspan="1" style="text-align: left">
-                    Total Amount: <span>cartTotal</span>
+                    Total Amount: <span>{{cart.totalAmount}}</span>
                 </th>
             </tr>
             </tfoot>
         </table>
 
-        <form class="row g-3">
-            <div class="col-md-6">
+        <form class="row g-3" [formGroup] = "cartForm" (ngSubmit)="createOrder()">
+            <div class="col-md-6" formGroupName="customer">
                 <label for="customerName" class="form-label">Customer Name</label>
                 <input type="text" class="form-control"
-                        id="customerName"
-                        name="customerName"
-                        value=""/>
+                        id="ame"
+                        name="name"
+                        formControlName="name"/>
             </div>
-            <div class="col-md-6">
+            <div class="col-md-6" formGroupName="customer">
                 <label for="customerEmail" class="form-label">Customer Email</label>
                 <input type="email" class="form-control"
-                        id="customerEmail"
-                        name="customerEmail"
-                        value="">
+                        id="email"
+                        name="email"
+                        formControlName="email">
             </div>
-            <div class="col-md-6">
+            <div class="col-md-6" formGroupName="customer">
                 <label for="customerPhone" class="form-label">Customer Phone</label>
                 <input type="text" class="form-control"
-                        id="customerPhone"
-                        name="customerPhone"
-                        value="">
+                        id="phoneNumber"
+                        name="phoneNumber"
+                        formControlName="phoneNumber">
             </div>
-            <div class="col-6">
+            <div class="col-6" formGroupName="address">
                 <label for="deliveryAddressLine1" class="form-label">Delivery Address Line 1</label>
                 <input class="form-control"
-                        id="deliveryAddressLine1"
-                        name="deliveryAddressLine1"/>
+                        id="addressLine1"
+                        name="addressLine1"
+                        formControlName="addressLine1"/>
             </div>
-            <div class="col-6">
+            <div class="col-6" formGroupName="address">
                 <label for="deliveryAddressLine2" class="form-label">Delivery Address Line 2</label>
                 <input class="form-control"
-                        id="deliveryAddressLine2"
-                        name="deliveryAddressLine2">
+                        id="addressLine2"
+                        name="addressLine2"
+                        formControlName="addressLine2"/>
             </div>
-            <div class="col-6">
+            <div class="col-6" formGroupName="address">
                 <label for="deliveryAddressCity" class="form-label">Delivery Address City</label>
                 <input class="form-control"
-                        id="deliveryAddressCity"
-                        name="deliveryAddressCity"/>
+                        id="city"
+                        name="city"
+                        formControlName="city"/>
             </div>
-            <div class="col-6">
+            <div class="col-6" formGroupName="address">
                 <label for="deliveryAddressState" class="form-label">Delivery Address State</label>
                 <input class="form-control"
-                        id="deliveryAddressState"
-                        name="deliveryAddressState"/>
+                        id="state"
+                        name="state"
+                        formControlName="state"/>
             </div>
-            <div class="col-6">
+            <div class="col-6" formGroupName="address">
                 <label for="deliveryAddressZipCode" class="form-label">Delivery Address ZipCode</label>
                 <input class="form-control"
-                        id="deliveryAddressZipCode"
-                        name="deliveryAddressZipCode"/>
+                        id="zipCode"
+                        name="zipCode"
+                        formControlName="zipCode"/>
             </div>
-            <div class="col-6">
+            <div class="col-6" formGroupName="address">
                 <label for="deliveryAddressCountry" class="form-label">Delivery Address Country</label>
                 <input class="form-control"
-                        id="deliveryAddressCountry"
-                        name="deliveryAddressCountry"/>
+                        id="country"
+                        name="country"
+                        formControlName="country"/>
             </div>
             <div class="col-12">
                 <button type="submit" class="btn btn-primary">Place Order</button>
             </div>
         </form>
     </div>
+    }
 </div>

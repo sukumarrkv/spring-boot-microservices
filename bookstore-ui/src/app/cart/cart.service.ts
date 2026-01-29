@@ -6,7 +6,7 @@ import { CartItem, CartRequest } from "./cart.model";
 export class CartService {
   cartQuantity = signal(0);
 
-  getCart() {
+  getCart() : CartRequest {
     let cart = localStorage.getItem('cart');
     //console.log(cart);
     let cartRequest : CartRequest = {
