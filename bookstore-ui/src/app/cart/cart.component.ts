@@ -1,4 +1,4 @@
-import { Component, inject } from '@angular/core';
+import { Component, inject, OnInit } from '@angular/core';
 import { FormControl, FormGroup, FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { CartService } from './cart.service';
 import { CartItem, CartRequest } from './cart.model';
@@ -11,9 +11,12 @@ import { CommonModule } from '@angular/common';
   templateUrl: './cart.component.html',
   styleUrl: './cart.component.css',
 })
-export class CartComponent {
+export class CartComponent implements OnInit{
   private cartService = inject(CartService);
-  cart: CartRequest= this.cartService.getCart();
+  cart: CartRequest = {
+    items: [],
+    totalAmount: 0
+  }
 
   cartForm = new FormGroup({
     customer: new FormGroup({
@@ -31,6 +34,9 @@ export class CartComponent {
     })
   })
 
+  ngOnInit(): void {
+    this.cart = this.cartService.getCart();
+  }
   getSubTotal(cartItem: CartItem) {
     const price = parseInt(cartItem.price);
     return cartItem.quantity * price;

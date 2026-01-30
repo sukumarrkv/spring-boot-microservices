@@ -1,4 +1,4 @@
-import { Injectable, signal } from "@angular/core";
+import { computed, Injectable, OnInit, signal } from "@angular/core";
 import { Product } from "../product/product.model";
 import { CartItem, CartRequest } from "./cart.model";
 
@@ -6,9 +6,10 @@ import { CartItem, CartRequest } from "./cart.model";
 export class CartService {
   cartQuantity = signal(0);
 
+  readonly getCartQuantity = computed(() => this.cartQuantity);
+
   getCart() : CartRequest {
     let cart = localStorage.getItem('cart');
-    //console.log(cart);
     let cartRequest : CartRequest = {
       items: [],
       totalAmount: 0

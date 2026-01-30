@@ -9,6 +9,5 @@ import { RouterLink } from "@angular/router";
   styleUrl: './header.component.css',
 })
 export class HeaderComponent {
-  private cartService = inject(CartService);
-  cartQuantity = this.cartService.cartQuantity;
+  cartService = inject(CartService);
 }

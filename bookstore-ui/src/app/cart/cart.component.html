@@ -17,16 +17,14 @@
             </thead>
             <tbody>
             @for(item of cart.items; track item.code) {
-                <template>
                     <tr>
                         <td>{{ item.name }}</td>
                         <td>{{ item.price }}</td>
                         <td>
-                            <input type="number" min="0"/>
+                            <input type="number" min="0" [value]="item.quantity"/>
                         </td>
                         <td>{{ getSubTotal(item) }}</td>
                     </tr>
-                </template>
             }
             </tbody>
             <tfoot>
@@ -41,63 +39,63 @@
 
         <form class="row g-3" [formGroup] = "cartForm" (ngSubmit)="createOrder()">
             <div class="col-md-6" formGroupName="customer">
-                <label for="customerName" class="form-label">Customer Name</label>
+                <label for="name" class="form-label">Customer Name</label>
                 <input type="text" class="form-control"
-                        id="ame"
+                        id="name"
                         name="name"
                         formControlName="name"/>
             </div>
             <div class="col-md-6" formGroupName="customer">
-                <label for="customerEmail" class="form-label">Customer Email</label>
+                <label for="email" class="form-label">Customer Email</label>
                 <input type="email" class="form-control"
                         id="email"
                         name="email"
                         formControlName="email">
             </div>
             <div class="col-md-6" formGroupName="customer">
-                <label for="customerPhone" class="form-label">Customer Phone</label>
+                <label for="phoneNumber" class="form-label">Customer Phone</label>
                 <input type="text" class="form-control"
                         id="phoneNumber"
                         name="phoneNumber"
                         formControlName="phoneNumber">
             </div>
             <div class="col-6" formGroupName="address">
-                <label for="deliveryAddressLine1" class="form-label">Delivery Address Line 1</label>
+                <label for="addressLine1" class="form-label">Delivery Address Line 1</label>
                 <input class="form-control"
                         id="addressLine1"
                         name="addressLine1"
                         formControlName="addressLine1"/>
             </div>
             <div class="col-6" formGroupName="address">
-                <label for="deliveryAddressLine2" class="form-label">Delivery Address Line 2</label>
+                <label for="addressLine2" class="form-label">Delivery Address Line 2</label>
                 <input class="form-control"
                         id="addressLine2"
                         name="addressLine2"
                         formControlName="addressLine2"/>
             </div>
             <div class="col-6" formGroupName="address">
-                <label for="deliveryAddressCity" class="form-label">Delivery Address City</label>
+                <label for="city" class="form-label">Delivery Address City</label>
                 <input class="form-control"
                         id="city"
                         name="city"
                         formControlName="city"/>
             </div>
             <div class="col-6" formGroupName="address">
-                <label for="deliveryAddressState" class="form-label">Delivery Address State</label>
+                <label for="state" class="form-label">Delivery Address State</label>
                 <input class="form-control"
                         id="state"
                         name="state"
                         formControlName="state"/>
             </div>
             <div class="col-6" formGroupName="address">
-                <label for="deliveryAddressZipCode" class="form-label">Delivery Address ZipCode</label>
+                <label for="zipCode" class="form-label">Delivery Address ZipCode</label>
                 <input class="form-control"
                         id="zipCode"
                         name="zipCode"
                         formControlName="zipCode"/>
             </div>
             <div class="col-6" formGroupName="address">
-                <label for="deliveryAddressCountry" class="form-label">Delivery Address Country</label>
+                <label for="country" class="form-label">Delivery Address Country</label>
                 <input class="form-control"
                         id="country"
                         name="country"
