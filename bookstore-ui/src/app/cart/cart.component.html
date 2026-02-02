@@ -21,9 +21,9 @@
                         <td>{{ item.name }}</td>
                         <td>{{ item.price }}</td>
                         <td>
-                            <input type="number" min="0" [value]="item.quantity"/>
+                            <input type="number" min="0" [value]="item.quantity" (change)="updateItemQuantity($event.target.value, item.code)"/>
                         </td>
-                        <td>{{ getSubTotal(item) }}</td>
+                        <td>{{ subTotal() }}</td>
                     </tr>
             }
             </tbody>

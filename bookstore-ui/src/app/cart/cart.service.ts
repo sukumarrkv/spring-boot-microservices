@@ -5,9 +5,7 @@ import { CartItem, CartRequest } from "./cart.model";
 @Injectable({providedIn: 'root'})
 export class CartService {
   cartQuantity = signal(0);
-
-  readonly getCartQuantity = computed(() => this.cartQuantity);
-
+  
   getCart() : CartRequest {
     let cart = localStorage.getItem('cart');
     let cartRequest : CartRequest = {
@@ -19,7 +17,7 @@ export class CartService {
       cart = JSON.stringify(cartRequest);
       localStorage.setItem('cart', cart);
     }
-
+    console.log(JSON.parse(cart));
     return JSON.parse(cart);
   }
 
@@ -47,5 +45,25 @@ export class CartService {
 
   updateCartQuantity() {
     this.cartQuantity.update(value => value + 1);
+  }
+
+  updateItemQuantity(quantity: string, code: string) {
+    const cart : CartRequest = this.getCart();
+    const quantityToUpdate = parseInt(quantity);
+    if(quantityToUpdate < 1) {
+      cart.items = cart.items.filter(item => item.code !== code);
+    } else {
+      const cartItem = cart.items.find(item => item.code === code);
+
+      if(cartItem) {
+        cartItem.quantity = quantityToUpdate;
+        //cartItem.price = cartItem.quantity * parseInt(cartItem.price);
+      } else {
+        alert("Product not found in the cart");
+      }
+    }
+
+    localStorage.setItem('cart', JSON.stringify(cart));
+    //this.updateCartQuantity();
   }
 }

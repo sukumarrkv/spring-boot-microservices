@@ -1,9 +1,10 @@
-import { Component, inject, OnInit } from '@angular/core';
+import { Component, inject, OnInit, signal } from '@angular/core';
 import { FormControl, FormGroup, FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { CartService } from './cart.service';
 import { CartItem, CartRequest } from './cart.model';
 import { RouterLink } from "@angular/router";
 import { CommonModule } from '@angular/common';
+import { Product, ProductResponse } from '../product/product.model';
 
 @Component({
   selector: 'app-cart',
@@ -12,7 +13,8 @@ import { CommonModule } from '@angular/common';
   styleUrl: './cart.component.css',
 })
 export class CartComponent implements OnInit{
-  private cartService = inject(CartService);
+  cartService = inject(CartService);
+  subTotal = signal(0);
   cart: CartRequest = {
     items: [],
     totalAmount: 0
@@ -37,12 +39,18 @@ export class CartComponent implements OnInit{
   ngOnInit(): void {
     this.cart = this.cartService.getCart();
   }
-  getSubTotal(cartItem: CartItem) {
-    const price = parseInt(cartItem.price);
-    return cartItem.quantity * price;
-  }
 
   createOrder() {
     console.log('Order Created Successfully');
+  }
+
+  updateItemQuantity(quantity: string, code: string) {
+    this.cartService.updateItemQuantity(quantity, code);
+  }
+
+  getSubTotal(item: CartItem) {
+    const price = parseInt(item.price);
+    const total = item.quantity * price;
+    this.subTotal.set(total);
   }
 }
