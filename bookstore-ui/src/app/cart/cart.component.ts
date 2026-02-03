@@ -14,11 +14,12 @@ import { Product, ProductResponse } from '../product/product.model';
 })
 export class CartComponent implements OnInit{
   cartService = inject(CartService);
-  subTotal = signal(0);
-  cart: CartRequest = {
-    items: [],
-    totalAmount: 0
-  }
+  //subTotal = signal(0);
+  cartItems : CartItem[] = this.cartService.cartItems();
+  // cart: CartRequest = {
+  //   items: [],
+  //   totalAmount: 0
+  // }
 
   cartForm = new FormGroup({
     customer: new FormGroup({
@@ -37,20 +38,24 @@ export class CartComponent implements OnInit{
   })
 
   ngOnInit(): void {
-    this.cart = this.cartService.getCart();
+    //this.cart = this.cartService.getCart();
+    this.cartItems = this.cartService.cartItems();
   }
 
   createOrder() {
     console.log('Order Created Successfully');
   }
 
-  updateItemQuantity(quantity: string, code: string) {
-    this.cartService.updateItemQuantity(quantity, code);
+  updateItemQuantity(quantity: string, item: CartItem) {
+    this.cartService.updateItemQuantity(quantity, item.code);
+    //this.cartService.getSubTotal(item);
+    //this.getSubTotal(item);
   }
 
   getSubTotal(item: CartItem) {
     const price = parseInt(item.price);
     const total = item.quantity * price;
-    this.subTotal.set(total);
+    //return total;
+    item.price = String(total);
   }
 }

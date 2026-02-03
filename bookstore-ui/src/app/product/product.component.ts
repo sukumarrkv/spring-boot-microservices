@@ -46,7 +46,6 @@ export class ProductComponent implements OnInit {
       next: (response) => {
         this.productResponse.set(response);
         this.products.set(response.data);
-        console.log(this.productResponse());
       }
     })
   }

@@ -4,7 +4,9 @@ import { CartItem, CartRequest } from "./cart.model";
 
 @Injectable({providedIn: 'root'})
 export class CartService {
-  cartQuantity = signal(0);
+  cartItems = signal<CartItem[]>([]);
+  cartQuantity = computed(() => this.cartItems.length);
+  //subTotal = signal(0);
   
   getCart() : CartRequest {
     let cart = localStorage.getItem('cart');
@@ -17,7 +19,8 @@ export class CartService {
       cart = JSON.stringify(cartRequest);
       localStorage.setItem('cart', cart);
     }
-    console.log(JSON.parse(cart));
+    //console.log(JSON.parse(cart));
+    this.updateCartItems(cartRequest.items);
     return JSON.parse(cart);
   }
 
@@ -39,12 +42,20 @@ export class CartService {
       cart.items.push(newCartItem);
     }
 
+    this.updateCartItems(cart.items);
     localStorage.setItem('cart', JSON.stringify(cart));
-    this.updateCartQuantity();
+    //this.updateCartQuantity();
   }
 
-  updateCartQuantity() {
-    this.cartQuantity.update(value => value + 1);
+  // updateCartQuantity() {
+  //   this.cartQuantity.update(value => value + 1);
+  // }
+
+  updateCartItems(cartItems: CartItem[]) {
+    this.cartItems.set(cartItems);
+    console.log(this.cartItems());
+    console.log(this.cartQuantity());
+    console.log(cartItems.length);
   }
 
   updateItemQuantity(quantity: string, code: string) {
@@ -57,6 +68,9 @@ export class CartService {
 
       if(cartItem) {
         cartItem.quantity = quantityToUpdate;
+        const price = parseInt(cartItem.price);
+        const total = cartItem.quantity * price;
+        cartItem.price = String(total);
         //cartItem.price = cartItem.quantity * parseInt(cartItem.price);
       } else {
         alert("Product not found in the cart");
@@ -66,4 +80,10 @@ export class CartService {
     localStorage.setItem('cart', JSON.stringify(cart));
     //this.updateCartQuantity();
   }
+
+  // getSubTotal(item: CartItem) {
+  //   const price = parseInt(item.price);
+  //   const total = item.quantity * price;
+  //   this.subTotal.set(total);
+  // }
 }
