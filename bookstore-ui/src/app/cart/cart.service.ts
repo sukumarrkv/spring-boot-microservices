@@ -5,8 +5,7 @@ import { CartItem, CartRequest } from "./cart.model";
 @Injectable({providedIn: 'root'})
 export class CartService {
   cartItems = signal<CartItem[]>([]);
-  cartQuantity = computed(() => this.cartItems.length);
-  //subTotal = signal(0);
+  cartQuantity = signal(0);
   
   getCart() : CartRequest {
     let cart = localStorage.getItem('cart');
@@ -19,8 +18,7 @@ export class CartService {
       cart = JSON.stringify(cartRequest);
       localStorage.setItem('cart', cart);
     }
-    //console.log(JSON.parse(cart));
-    this.updateCartItems(cartRequest.items);
+
     return JSON.parse(cart);
   }
 
@@ -30,6 +28,7 @@ export class CartService {
 
     if(cartItem) {
       cartItem.quantity = cartItem.quantity + 1;
+      this.updateCartItems(cartItem);
     } else {
       const newCartItem: CartItem = {
         code: product.code,
@@ -39,23 +38,21 @@ export class CartService {
         price: product.price,
         quantity: 1
       }
+      this.updateCartItems(newCartItem);
       cart.items.push(newCartItem);
     }
 
-    this.updateCartItems(cart.items);
+    //console.log("Cart items in add cart method: ", cart.items);
     localStorage.setItem('cart', JSON.stringify(cart));
-    //this.updateCartQuantity();
   }
 
-  // updateCartQuantity() {
-  //   this.cartQuantity.update(value => value + 1);
-  // }
-
-  updateCartItems(cartItems: CartItem[]) {
-    this.cartItems.set(cartItems);
-    console.log(this.cartItems());
-    console.log(this.cartQuantity());
-    console.log(cartItems.length);
+  updateCartItems(cartItem: CartItem) {
+    console.log("Before setting", this.cartItems());
+    this.cartItems.set([...this.cartItems(), cartItem]);
+    console.log("After setting", this.cartItems());
+    //console.log("Cart items from signal: ", this.cartItems());
+    this.cartQuantity.set(this.cartItems().length);
+    //console.log("Cart length: ", this.cartQuantity());
   }
 
   updateItemQuantity(quantity: string, code: string) {
@@ -71,19 +68,11 @@ export class CartService {
         const price = parseInt(cartItem.price);
         const total = cartItem.quantity * price;
         cartItem.price = String(total);
-        //cartItem.price = cartItem.quantity * parseInt(cartItem.price);
+        this.updateCartItems(cartItem);
       } else {
         alert("Product not found in the cart");
       }
     }
-
     localStorage.setItem('cart', JSON.stringify(cart));
-    //this.updateCartQuantity();
   }
-
-  // getSubTotal(item: CartItem) {
-  //   const price = parseInt(item.price);
-  //   const total = item.quantity * price;
-  //   this.subTotal.set(total);
-  // }
 }
