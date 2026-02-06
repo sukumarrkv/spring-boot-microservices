@@ -39,7 +39,7 @@ export class CartComponent implements OnInit{
 
   ngOnInit(): void {
     //this.cart = this.cartService.getCart();
-    this.cartItems = this.cartService.cartItems();
+    //this.cartItems = this.cartService.cartItems();
   }
 
   createOrder() {

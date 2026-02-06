@@ -47,12 +47,12 @@ export class CartService {
   }
 
   updateCartItems(cartItem: CartItem) {
-    console.log("Before setting", this.cartItems());
-    this.cartItems.set([...this.cartItems(), cartItem]);
-    console.log("After setting", this.cartItems());
-    //console.log("Cart items from signal: ", this.cartItems());
+    this.cartItems.update(items => items.filter(item => item.code !== cartItem.code))
+    //this.cartItems.set(this.cartItems().filter(item => item.code !== cartItem.code));
+    //this.cartItems.update()
+    this.cartItems.update(items => [...items, cartItem]);
+    //this.cartItems.set([...this.cartItems(), cartItem]);
     this.cartQuantity.set(this.cartItems().length);
-    //console.log("Cart length: ", this.cartQuantity());
   }
 
   updateItemQuantity(quantity: string, code: string) {
